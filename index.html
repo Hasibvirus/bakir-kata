@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>বাকির খাতা</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@500;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@600;800&display=swap">
+<style>
+/* Layout: a shopkeeper's ledger on a phone. A red cloth-bound cover card carries the running total (with a stitched edge);
+   customers are ruled rows below it. Red ink means money owed, green means money received. */
+:root {
+  --bg: #F4F2F2;
+  --surface: #FFFFFF;
+  --ink: #231B1C;
+  --muted: #6B5F61;
+  --line: #E4DCDD;
+  --khero: #9A1B26;
+  --on-khero: #FFF7F7;
+  --owe: #B3261E;
+  --owe-bg: #FBE6E4;
+  --ok: #17784F;
+  --on-ok: #FFFFFF;
+  --ok-bg: #E3F4EB;
+  --focus: #1D5FA8;
+  --font-display: 'Anek Bangla', 'Hind Siliguri', 'Noto Sans Bengali', system-ui, sans-serif;
+  --font-head: 'Noto Serif Bengali', 'Anek Bangla', 'Hind Siliguri', serif;
+  --font-body: 'Hind Siliguri', 'Noto Sans Bengali', 'Kalpurush', system-ui, sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.75rem;
+  --fs-2xl: 2.5rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131011;
+    --surface: #1D1718;
+    --ink: #F2EAEB;
+    --muted: #AC9EA0;
+    --line: #352B2C;
+    --khero: #7E1721;
+    --on-khero: #FFF3F3;
+    --owe: #FF8A82;
+    --owe-bg: #3A1C1B;
+    --ok: #58D39B;
+    --on-ok: #06241A;
+    --ok-bg: #16322A;
+    --focus: #7DB6F0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131011;
+  --surface: #1D1718;
+  --ink: #F2EAEB;
+  --muted: #AC9EA0;
+  --line: #352B2C;
+  --khero: #7E1721;
+  --on-khero: #FFF3F3;
+  --owe: #FF8A82;
+  --owe-bg: #3A1C1B;
+  --ok: #58D39B;
+  --on-ok: #06241A;
+  --ok-bg: #16322A;
+  --focus: #7DB6F0;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  padding-block: 16px 112px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-text-size-adjust: 100%;
+  font-variant-numeric: tabular-nums;
+}
+h1, h2, h3, p, ul { margin: 0; }
+ul { padding: 0; list-style: none; }
+h2 { font-family: var(--font-head); font-size: var(--fs-lg); font-weight: 800; line-height: 1.3; text-wrap: balance; }
+h3 { font-family: var(--font-display); font-size: var(--fs-base); font-weight: 700; }
+.note { font-size: var(--fs-sm); color: var(--muted); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+button { font-family: inherit; }
+.wrap { max-width: 560px; margin: 0 auto; display: grid; gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+
+/* cover */
+.band {
+  position: relative; background: var(--khero); color: var(--on-khero);
+  border-radius: 14px; padding: 16px 16px 26px; display: grid; gap: 2px;
+}
+.band::after {
+  content: ""; position: absolute; left: 12px; right: 12px; bottom: 9px;
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.4);
+}
+.band-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 40px; }
+.eyebrow { font-size: var(--fs-sm); letter-spacing: 0.04em; opacity: 0.85; }
+.shop { font-family: var(--font-head); font-size: var(--fs-lg); font-weight: 800; overflow-wrap: anywhere; }
+.band .lbl { font-size: var(--fs-sm); opacity: 0.85; margin-top: 8px; }
+.band .total { font-family: var(--font-display); font-size: var(--fs-2xl); font-weight: 800; line-height: 1.15; overflow-wrap: anywhere; }
+.band .meta { font-size: var(--fs-sm); opacity: 0.9; }
+.icon-btn {
+  width: 44px; height: 44px; border: 0; border-radius: 10px; background: rgba(255, 255, 255, 0.14); color: var(--on-khero);
+  display: grid; place-items: center; cursor: pointer; flex: none;
+}
+.icon-btn svg, .back svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.back { display: inline-flex; align-items: center; gap: 4px; border: 0; background: transparent; color: var(--on-khero); font-size: var(--fs-sm); font-weight: 600; cursor: pointer; padding: 8px 8px 8px 0; min-height: 44px; }
+
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; min-width: 0; }
+.stat .l { font-size: var(--fs-xs); color: var(--muted); }
+.stat .v { font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 800; overflow-wrap: anywhere; }
+.stat .s { font-size: var(--fs-xs); color: var(--muted); }
+.owe { color: var(--owe); }
+.ok { color: var(--ok); }
+
+.field { min-width: 0; display: grid; gap: 4px; }
+.field label { font-size: var(--fs-sm); color: var(--muted); }
+.field input, .field textarea {
+  width: 100%; min-width: 0; padding: 0 12px; height: 48px;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 1.125rem; font-weight: 500;
+}
+.field textarea { height: auto; padding: 10px 12px; font-size: 1rem; line-height: 1.6; resize: vertical; }
+.field input[type="date"] { font-size: 1rem; }
+.row2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+.chip {
+  flex: none; border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+  height: 36px; padding: 0 14px; border-radius: 999px; font-size: var(--fs-sm); font-weight: 600; cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.btn {
+  min-height: 48px; border-radius: 10px; border: 0; background: var(--ink); color: var(--bg);
+  font-size: var(--fs-base); font-weight: 700; cursor: pointer; padding: 0 16px;
+  display: inline-flex; align-items: center; justify-content: center; text-decoration: none; text-align: center;
+}
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn.debt { background: var(--khero); color: var(--on-khero); }
+.btn.pay { background: var(--ok); color: var(--on-ok); }
+.btn.danger { color: var(--owe); }
+.btnrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 3px; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); height: 40px; border-radius: 8px; font-size: 0.9375rem; font-weight: 600; cursor: pointer; padding: 0 6px; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line); }
+
+/* customer rows */
+.clist { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.crow {
+  width: 100%; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center;
+  padding: 12px 14px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: var(--ink);
+  text-align: left; cursor: pointer; min-height: 64px;
+}
+.crow:last-child { border-bottom: 0; }
+.avatar {
+  width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center;
+  background: var(--bg); border: 1px solid var(--line); font-family: var(--font-head); font-weight: 800; font-size: var(--fs-lg);
+}
+.cmain { min-width: 0; display: grid; }
+.cmain b { font-weight: 600; overflow-wrap: anywhere; }
+.cmain small { font-size: var(--fs-xs); color: var(--muted); }
+.camt { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-lg); text-align: right; }
+.camt small { display: block; font-family: var(--font-body); font-weight: 500; font-size: var(--fs-xs); color: var(--muted); }
+.tag { display: inline-block; font-size: 0.6875rem; font-weight: 700; padding: 0 7px; border-radius: 999px; background: var(--owe-bg); color: var(--owe); margin-left: 6px; vertical-align: 1px; }
+.tag.sample { background: var(--bg); color: var(--muted); border: 1px solid var(--line); }
+.empty { padding: 28px 16px; text-align: center; color: var(--muted); display: grid; gap: 12px; justify-items: center; }
+
+/* ledger entries */
+.ledger { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.ledger-h { padding: 12px 14px; font-family: var(--font-display); font-weight: 700; border-bottom: 1px solid var(--line); }
+.erow { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 10px 14px; border-bottom: 1px solid var(--line); align-items: start; }
+.erow:last-child { border-bottom: 0; }
+.ed { min-width: 0; display: grid; }
+.ed b { font-weight: 600; font-size: var(--fs-sm); }
+.ed span { font-size: var(--fs-sm); color: var(--muted); overflow-wrap: anywhere; }
+.ea { text-align: right; font-family: var(--font-display); font-weight: 800; }
+.ea small { display: block; font-family: var(--font-body); font-weight: 500; font-size: var(--fs-xs); color: var(--muted); }
+.edel { grid-column: 1 / -1; justify-self: end; border: 0; background: transparent; color: var(--muted); font-size: var(--fs-xs); cursor: pointer; min-height: 32px; padding: 0 4px; text-decoration: underline; }
+
+.fab {
+  position: fixed; z-index: 20; height: 52px; padding: 0 20px; border: 0; border-radius: 999px;
+  background: var(--khero); color: var(--on-khero); font-size: var(--fs-base); font-weight: 700; cursor: pointer;
+  right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28); display: inline-flex; align-items: center; gap: 8px;
+}
+.fab svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; }
+
+/* sheet */
+.scrim { position: fixed; inset: 0; z-index: 40; background: rgba(10, 6, 7, 0.55); }
+.sheet {
+  position: fixed; z-index: 41; left: 0; right: 0; bottom: 0; margin: 0 auto; max-width: 560px;
+  background: var(--surface); color: var(--ink); border-radius: 16px 16px 0 0; border: 1px solid var(--line);
+  padding: 18px max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  display: grid; gap: 14px; max-height: 90%; overflow-y: auto;
+}
+.sheet-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.err { color: var(--owe); font-weight: 600; font-size: var(--fs-sm); }
+.banner { background: var(--surface); border: 1px dashed var(--muted); border-radius: 12px; padding: 12px 14px; display: grid; gap: 10px; font-size: var(--fs-sm); }
+.toast {
+  position: fixed; left: 50%; transform: translateX(-50%); z-index: 60;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg);
+  padding: 10px 16px; border-radius: 10px; font-size: var(--fs-sm); font-weight: 600; max-width: calc(100% - 32px);
+}
+.pre { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.75rem; }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div id="sheetRoot"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /*CALC-START*/
+  var BN = '০১২৩৪৫৬৭৮৯';
+  var MONTHS = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+  function toBn(s) { return String(s).replace(/\d/g, function (d) { return BN[+d]; }); }
+  function round2(n) { return Math.round(n * 100) / 100; }
+  function fmt(n, dec) {
+    dec = dec || 0;
+    return toBn(Number(n).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }));
+  }
+  function num(n) { n = round2(n); return fmt(n, Number.isInteger(n) ? 0 : 2); }
+  function money(n) { return '৳' + num(n); }
+  function parseNum(s) {
+    if (s == null) return NaN;
+    var t = String(s).replace(/[০-৯]/g, function (d) { return BN.indexOf(d); }).replace(/[,\s৳]/g, '').replace('।', '.');
+    if (t === '') return NaN;
+    var v = Number(t);
+    return isFinite(v) ? v : NaN;
+  }
+  function isoDate(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function parseISO(s) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '');
+    return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+  }
+  function daysBetween(a, b) { return Math.round((b - a) / 86400000); }
+  function dateTxt(d) {
+    var s = toBn(d.getDate()) + ' ' + MONTHS[d.getMonth()];
+    return d.getFullYear() === new Date().getFullYear() ? s : s + ' ' + toBn(d.getFullYear());
+  }
+  function cmpEntry(a, b) { return a.date < b.date ? -1 : (a.date > b.date ? 1 : (a.ts || 0) - (b.ts || 0)); }
+
+  /* Oldest-first settlement: each payment clears the oldest unpaid debt first. */
+  function info(entries, todayD) {
+    var es = entries.slice().sort(cmpEntry), queue = [], credit = 0, bal = 0, last = null;
+    es.forEach(function (e) {
+      last = e.date;
+      var rem;
+      if (e.t === 'debt') {
+        bal += e.amt;
+        rem = e.amt;
+        if (credit > 0) { var use = Math.min(credit, rem); credit -= use; rem -= use; }
+        if (rem > 1e-9) queue.push({ date: e.date, amt: rem });
+      } else {
+        bal -= e.amt;
+        rem = e.amt;
+        while (rem > 1e-9 && queue.length) {
+          var q = queue[0];
+          if (q.amt <= rem + 1e-9) { rem -= q.amt; queue.shift(); } else { q.amt -= rem; rem = 0; }
+        }
+        if (rem > 1e-9) credit += rem;
+      }
+    });
+    bal = round2(bal);
+    var oldest = (bal > 0 && queue.length) ? queue[0].date : null;
+    var age = oldest ? daysBetween(parseISO(oldest), todayD) : 0;
+    return { bal: bal, oldest: oldest, age: age, old: bal > 0 && age >= 30, last: last };
+  }
+  function normPhone(p) {
+    var d = String(p || '').replace(/[০-৯]/g, function (x) { return BN.indexOf(x); }).replace(/\D/g, '');
+    if (!d) return '';
+    if (d.indexOf('880') === 0) return d;
+    if (d.charAt(0) === '0') return '88' + d;
+    if (d.length === 10 && d.charAt(0) === '1') return '880' + d;
+    return d;
+  }
+  function buildMsg(name, shop, tone, inf) {
+    var amt = num(inf.bal) + ' টাকা';
+    if (tone === 'urgent') {
+      return name + ', ' + shop + '-এর খাতায় আপনার ' + amt + ' ' + (inf.age > 0 ? fmt(inf.age) + ' দিন ধরে ' : '') + 'বাকি আছে। আজই যোগাযোগ করে পরিশোধের একটা দিন জানান। ধন্যবাদ।';
+    }
+    if (tone === 'normal') {
+      return name + ', ' + shop + '-এর খাতায় আপনার মোট বাকি ' + amt + '। অনুগ্রহ করে এই সপ্তাহের মধ্যে পরিশোধ করুন। ধন্যবাদ।';
+    }
+    return 'আসসালামু আলাইকুম ' + name + '। ' + shop + '-এর খাতায় আপনার ' + amt + ' বাকি আছে' +
+      (inf.oldest ? ' (' + dateTxt(parseISO(inf.oldest)) + ' থেকে)' : '') + '। সুবিধামতো সময়ে পরিশোধ করলে খুব উপকার হয়। ধন্যবাদ।';
+  }
+  /*CALC-END*/
+
+  function $(s) { return document.querySelector(s); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  var todayD = new Date(); todayD.setHours(0, 0, 0, 0);
+  var todayISO = isoDate(todayD);
+  function dateAgo(n) { var d = new Date(todayD); d.setDate(d.getDate() - n); return isoDate(d); }
+  function agoTxt(iso) {
+    var n = daysBetween(parseISO(iso), todayD);
+    return n <= 0 ? 'আজ' : (n === 1 ? 'গতকাল' : fmt(n) + ' দিন আগে');
+  }
+
+  /* ---------- storage ---------- */
+  var KEY = 'bakir-khata-v1';
+  var memOnly = false;
+  function readStore() { try { var raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : null; } catch (e) { memOnly = true; return null; } }
+  function writeStore() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) { memOnly = true; } }
+  function sanitize(d) {
+    if (!d || !Array.isArray(d.customers)) return null;
+    var out = { shop: (typeof d.shop === 'string' && d.shop.trim()) ? d.shop.slice(0, 60) : 'আমার দোকান', sample: !!d.sample, customers: [] };
+    d.customers.forEach(function (c) {
+      if (!c || typeof c.name !== 'string' || !c.name.trim()) return;
+      var cc = { id: String(c.id || uid()), name: c.name.slice(0, 60), phone: typeof c.phone === 'string' ? c.phone.slice(0, 20) : '', sample: !!c.sample, entries: [] };
+      (Array.isArray(c.entries) ? c.entries : []).forEach(function (e) {
+        if (!e || (e.t !== 'debt' && e.t !== 'pay')) return;
+        var a = Number(e.amt);
+        if (!isFinite(a) || a <= 0 || !parseISO(e.date)) return;
+        cc.entries.push({ id: String(e.id || uid()), t: e.t, amt: a, note: typeof e.note === 'string' ? e.note.slice(0, 80) : '', date: e.date, ts: Number(e.ts) || 0 });
+      });
+      out.customers.push(cc);
+    });
+    return out;
+  }
+  function sampleStore() {
+    var n = 0;
+    function en(t, amt, ago, note) { n++; return { id: 's' + n, t: t, amt: amt, note: note || '', date: dateAgo(ago), ts: n }; }
+    return {
+      shop: 'আমার দোকান', sample: true,
+      customers: [
+        { id: 'c1', name: 'করিম মিয়া', phone: '01700000001', sample: true, entries: [en('debt', 1200, 48, 'চাল, ডাল'), en('pay', 500, 30), en('debt', 350, 6, 'তেল')] },
+        { id: 'c2', name: 'সালমা বেগম', phone: '01700000002', sample: true, entries: [en('debt', 640, 12, 'মুদি সদাই'), en('debt', 220, 4)] },
+        { id: 'c3', name: 'হাসান স্টোর', phone: '', sample: true, entries: [en('debt', 3500, 35, 'পাইকারি মাল'), en('pay', 1000, 10)] },
+        { id: 'c4', name: 'রফিক ভাই', phone: '01700000004', sample: true, entries: [en('debt', 150, 2), en('pay', 150, 1)] }
+      ]
+    };
+  }
+  var store = sanitize(readStore()) || sampleStore();
+  var state = { view: 'home', cid: null, q: '', filter: 'all', tone: 'soft' };
+  writeStore();
+
+  function custById(id) { return store.customers.filter(function (c) { return c.id === id; })[0]; }
+  function allInfo() {
+    return store.customers.map(function (c) { return { c: c, i: info(c.entries, todayD) }; });
+  }
+
+  /* ---------- helpers ---------- */
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $('#toast'); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.hidden = true; }, 2200);
+  }
+  var armed = {};
+  function confirmTwice(btn, key, idle, run) {
+    if (armed[key]) { clearTimeout(armed[key]); delete armed[key]; run(); return; }
+    btn.textContent = 'নিশ্চিত? আবার চাপুন';
+    armed[key] = setTimeout(function () { delete armed[key]; if (document.body.contains(btn)) btn.textContent = idle; }, 3500);
+  }
+  function copyText(text, srcEl) {
+    function fallback() {
+      try { if (srcEl) { srcEl.focus(); srcEl.select(); document.execCommand('copy'); toast('কপি হয়েছে'); return; } } catch (e) { /* ignore */ }
+      toast('কপি করা যায়নি, লেখাটি চেপে ধরে কপি করুন');
+    }
+    try { navigator.clipboard.writeText(text).then(function () { toast('কপি হয়েছে'); }, fallback); } catch (e) { fallback(); }
+  }
+  var SVG = {
+    gear: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+    back: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+    plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'
+  };
+
+  /* ---------- views ---------- */
+  var app = $('#app');
+
+  function render() {
+    if (state.view === 'cust' && !custById(state.cid)) state.view = 'home';
+    if (state.view === 'home') renderHome();
+    else if (state.view === 'cust') renderCust();
+    else renderSettings();
+  }
+  function go(view, cid) { state.view = view; if (cid) state.cid = cid; render(); window.scrollTo(0, 0); }
+
+  function renderHome() {
+    var rows = allInfo(), total = 0, owing = 0, oldSum = 0, oldN = 0, monthPaid = 0, ym = todayISO.slice(0, 7);
+    rows.forEach(function (r) {
+      if (r.i.bal > 0) { total += r.i.bal; owing++; }
+      if (r.i.old) { oldSum += r.i.bal; oldN++; }
+      r.c.entries.forEach(function (e) { if (e.t === 'pay' && e.date.slice(0, 7) === ym) monthPaid += e.amt; });
+    });
+    var h = '<section class="band"><div class="band-top"><span class="eyebrow">বাকির খাতা</span>' +
+      '<button type="button" class="icon-btn" data-act="settings" aria-label="সেটিংস ও ব্যাকআপ">' + SVG.gear + '</button></div>' +
+      '<p class="shop">' + esc(store.shop) + '</p><p class="lbl">মোট বাকি</p><p class="total">' + money(total) + '</p>' +
+      '<p class="meta">' + (owing ? fmt(owing) + ' জনের কাছে বাকি আছে' : 'এখন কারও কাছে বাকি নেই') + '</p></section>';
+    h += '<div class="stats"><div class="stat"><div class="l">৩০ দিনের বেশি পুরনো</div><div class="v ' + (oldN ? 'owe' : '') + '">' + money(oldSum) + '</div><div class="s">' + fmt(oldN) + ' জন</div></div>' +
+      '<div class="stat"><div class="l">এ মাসে পেয়েছি</div><div class="v ok">' + money(monthPaid) + '</div><div class="s">' + MONTHS[todayD.getMonth()] + '</div></div></div>';
+    if (store.sample) {
+      h += '<div class="banner"><span><span class="tag sample">নমুনা</span> এগুলো নমুনা কাস্টমার। নিজের খাতা শুরু করতে নমুনা মুছে ফেলুন।</span>' +
+        '<button type="button" class="btn ghost" data-act="clear-sample">নমুনা মুছে শুরু করুন</button></div>';
+    }
+    if (memOnly) {
+      h += '<div class="banner"><span class="err">এই ব্রাউজারে তথ্য সেভ হচ্ছে না। সেটিংস থেকে ব্যাকআপ কপি করে রাখুন।</span></div>';
+    }
+    h += '<div class="field"><label for="q">কাস্টমার খুঁজুন</label><input id="q" type="search" placeholder="নাম বা ফোন নম্বর" autocomplete="off" value="' + esc(state.q) + '"></div>';
+    h += '<div id="listArea"></div>';
+    h += '<button type="button" class="fab" data-act="add-cust">' + SVG.plus + 'নতুন কাস্টমার</button>';
+    app.innerHTML = h;
+    renderList();
+  }
+
+  function renderList() {
+    var area = $('#listArea'); if (!area) return;
+    var rows = allInfo(), q = state.q.trim().toLowerCase(), qd = q.replace(/[০-৯]/g, function (d) { return BN.indexOf(d); });
+    var list = rows.filter(function (r) {
+      if (q && r.c.name.toLowerCase().indexOf(q) < 0 && String(r.c.phone).replace(/[০-৯]/g, function (d) { return BN.indexOf(d); }).indexOf(qd) < 0) return false;
+      if (state.filter === 'due') return r.i.bal > 0;
+      if (state.filter === 'old') return r.i.old;
+      if (state.filter === 'clear') return r.i.bal <= 0;
+      return true;
+    }).sort(function (a, b) { return b.i.bal - a.i.bal || a.c.name.localeCompare(b.c.name); });
+    var fl = [['all', 'সবাই'], ['due', 'বাকি আছে'], ['old', 'পুরনো ৩০+ দিন'], ['clear', 'শোধ হয়েছে']];
+    var h = '<div class="chips" role="group" aria-label="ফিল্টার">' + fl.map(function (f) {
+      return '<button type="button" class="chip" data-act="filter" data-f="' + f[0] + '" aria-pressed="' + (state.filter === f[0]) + '">' + f[1] + '</button>';
+    }).join('') + '</div>';
+    if (!store.customers.length) {
+      h += '<div class="clist"><div class="empty"><p>এখনো কোনো কাস্টমার নেই। প্রথম কাস্টমার যোগ করে বাকি লেখা শুরু করুন।</p><button type="button" class="btn" data-act="add-cust">নতুন কাস্টমার</button></div></div>';
+    } else if (!list.length) {
+      h += '<div class="clist"><div class="empty"><p>এই ফিল্টারে কেউ নেই।</p></div></div>';
+    } else {
+      h += '<div class="clist" style="margin-top:12px">' + list.map(function (r) {
+        var c = r.c, i = r.i, amt, sub;
+        if (i.bal > 0) amt = '<span class="camt owe">' + money(i.bal) + '</span>';
+        else if (i.bal < 0) amt = '<span class="camt ok">' + money(-i.bal) + '<small>অগ্রিম</small></span>';
+        else amt = '<span class="camt ok">০<small>মিটেছে</small></span>';
+        sub = i.last ? 'শেষ লেনদেন ' + agoTxt(i.last) : 'কোনো লেনদেন নেই';
+        return '<button type="button" class="crow" data-act="open" data-id="' + esc(c.id) + '"><span class="avatar" aria-hidden="true">' + esc(c.name.charAt(0)) + '</span>' +
+          '<span class="cmain"><b>' + esc(c.name) + (i.old ? '<span class="tag">' + fmt(i.age) + ' দিন</span>' : '') + (c.sample ? '<span class="tag sample">নমুনা</span>' : '') + '</b><small>' + sub + '</small></span>' + amt + '</button>';
+      }).join('') + '</div>';
+    }
+    area.innerHTML = h;
+  }
+
+  function renderCust() {
+    var c = custById(state.cid), i = info(c.entries, todayD);
+    var label = i.bal > 0 ? 'বাকি আছে' : (i.bal < 0 ? 'অগ্রিম জমা' : 'হিসাব মিটেছে');
+    var h = '<section class="band"><div class="band-top"><button type="button" class="back" data-act="back">' + SVG.back + 'খাতা</button>' +
+      '<button type="button" class="icon-btn" data-act="edit-cust" aria-label="নাম ও ফোন বদলান">' + SVG.gear + '</button></div>' +
+      '<p class="shop">' + esc(c.name) + '</p>' +
+      (c.phone ? '<p class="meta">' + esc(c.phone) + '</p>' : '<p class="meta">ফোন নম্বর দেওয়া নেই</p>') +
+      '<p class="lbl">' + label + '</p><p class="total">' + money(Math.abs(i.bal)) + '</p>' +
+      (i.oldest ? '<p class="meta">সবচেয়ে পুরনো বাকি ' + fmt(i.age) + ' দিনের (' + dateTxt(parseISO(i.oldest)) + ' থেকে)</p>' : '') + '</section>';
+    h += '<div class="btnrow"><button type="button" class="btn debt" data-act="debt">বাকি দিলাম</button><button type="button" class="btn pay" data-act="pay">টাকা পেলাম</button></div>';
+    if (i.bal > 0) h += '<div class="card" id="remind"></div>';
+
+    var es = c.entries.slice().sort(cmpEntry), run = 0, withBal = es.map(function (e) { run += e.t === 'debt' ? e.amt : -e.amt; return { e: e, b: round2(run) }; }).reverse();
+    h += '<div class="ledger"><div class="ledger-h">লেনদেন</div>';
+    if (!withBal.length) h += '<div class="empty"><p>এখনো কোনো লেনদেন নেই।</p></div>';
+    h += withBal.map(function (x) {
+      var e = x.e, isD = e.t === 'debt';
+      return '<div class="erow"><div class="ed"><b>' + dateTxt(parseISO(e.date)) + ' · ' + (isD ? 'বাকি দিলাম' : 'টাকা পেলাম') + '</b>' + (e.note ? '<span>' + esc(e.note) + '</span>' : '') + '</div>' +
+        '<div class="ea ' + (isD ? 'owe' : 'ok') + '">' + (isD ? '+' : '−') + money(e.amt) + '<small>মোট ' + (x.b < 0 ? 'অগ্রিম ' + money(-x.b) : money(x.b)) + '</small></div>' +
+        '<button type="button" class="edel" data-act="del-entry" data-id="' + esc(e.id) + '">মুছুন</button></div>';
+    }).join('');
+    h += '</div>';
+    app.innerHTML = h;
+    if (i.bal > 0) renderRemind(c, i);
+  }
+
+  function msgText(c, i) { return buildMsg(c.name, store.shop || 'আমাদের দোকান', state.tone, i); }
+  function renderRemind(c, i) {
+    var box = $('#remind'); if (!box) return;
+    var num = normPhone(c.phone), tones = [['soft', 'বিনয়ী'], ['normal', 'সাধারণ'], ['urgent', 'জরুরি']];
+    box.innerHTML = '<h3>তাগাদার মেসেজ</h3>' +
+      '<div class="seg" role="group" aria-label="মেসেজের সুর">' + tones.map(function (t) {
+        return '<button type="button" data-act="tone" data-tone="' + t[0] + '" aria-pressed="' + (state.tone === t[0]) + '">' + t[1] + '</button>';
+      }).join('') + '</div>' +
+      '<div class="field"><label for="msg">মেসেজ (বদলানো যায়)</label><textarea id="msg" rows="5">' + esc(msgText(c, i)) + '</textarea></div>' +
+      '<div class="btnrow"><button type="button" class="btn" data-act="copy-msg">কপি করুন</button>' +
+      (num ? '<a class="btn ghost" id="waLink" target="_blank" rel="noopener">WhatsApp</a><a class="btn ghost" id="smsLink">SMS</a>' : '') + '</div>' +
+      '<p class="note">' + (num ? 'বোতামে অ্যাপ না খুললে মেসেজটি কপি করে নিজে পাঠান।' : 'ফোন নম্বর দিলে WhatsApp ও SMS বোতাম আসবে।') + '</p>';
+    syncLinks(c);
+  }
+  function syncLinks(c) {
+    var ta = $('#msg'), wa = $('#waLink'), sms = $('#smsLink'), n = normPhone(c.phone);
+    if (!ta || !n) return;
+    var t = encodeURIComponent(ta.value);
+    if (wa) wa.href = 'https://wa.me/' + n + '?text=' + t;
+    if (sms) sms.href = 'sms:+' + n + '?body=' + t;
+  }
+
+  function renderSettings() {
+    var json = JSON.stringify(store);
+    app.innerHTML =
+      '<section class="band"><div class="band-top"><button type="button" class="back" data-act="back">' + SVG.back + 'খাতা</button></div><p class="shop">সেটিংস ও ব্যাকআপ</p></section>' +
+      '<div class="card"><h2>দোকানের নাম</h2><p class="note">তাগাদার মেসেজে এই নাম বসবে।</p>' +
+      '<div class="field"><label for="shopName">দোকানের নাম</label><input id="shopName" maxlength="60" autocomplete="off" value="' + esc(store.shop) + '"></div></div>' +
+      '<div class="card"><h2>ব্যাকআপ</h2><p class="note">তথ্য শুধু এই ফোনের ব্রাউজারে থাকে। ব্রাউজারের ডেটা মুছলে হারিয়ে যাবে, তাই মাঝে মাঝে নিচের লেখাটি কপি করে নিজের কাছে (যেমন নোটস বা WhatsApp-এ নিজেকে) রেখে দিন।</p>' +
+      '<div class="field"><label for="bk">ব্যাকআপের লেখা</label><textarea id="bk" class="pre" rows="4" readonly>' + esc(json) + '</textarea></div>' +
+      '<button type="button" class="btn" data-act="copy-backup">ব্যাকআপ কপি করুন</button></div>' +
+      '<div class="card"><h2>ব্যাকআপ থেকে ফিরিয়ে আনুন</h2><p class="note">আগে কপি করা লেখা এখানে পেস্ট করুন। এতে বর্তমান সব তথ্য বদলে যাবে।</p>' +
+      '<div class="field"><label for="rs">ব্যাকআপের লেখা পেস্ট করুন</label><textarea id="rs" class="pre" rows="4"></textarea></div><p class="err" id="rsErr" hidden></p>' +
+      '<button type="button" class="btn ghost" data-act="restore">ফিরিয়ে আনুন</button></div>' +
+      '<div class="card"><h2>সব তথ্য মুছুন</h2><p class="note">সব কাস্টমার ও লেনদেন মুছে যাবে। আগে ব্যাকআপ কপি করে নিন।</p><button type="button" class="btn ghost danger" data-act="wipe">সব তথ্য মুছুন</button></div>';
+  }
+
+  /* ---------- sheets ---------- */
+  var sheetRoot = $('#sheetRoot'), sheetSubmit = null, lastFocus = null;
+  function openSheet(title, body, submit, okText) {
+    lastFocus = document.activeElement; sheetSubmit = submit;
+    sheetRoot.innerHTML = '<div class="scrim" data-close></div><form class="sheet" id="sheetForm" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" novalidate>' +
+      '<h2 id="sheetTitle">' + title + '</h2>' + body + '<p class="err" id="sheetErr" role="alert" hidden></p>' +
+      '<div class="sheet-actions"><button type="button" class="btn ghost" data-close>বাতিল</button><button type="submit" class="btn">' + (okText || 'সংরক্ষণ') + '</button></div></form>';
+    var f = sheetRoot.querySelector('input'); if (f) f.focus();
+  }
+  function closeSheet() {
+    sheetRoot.innerHTML = ''; sheetSubmit = null;
+    if (lastFocus && document.body.contains(lastFocus)) { try { lastFocus.focus(); } catch (e) { /* ignore */ } }
+  }
+  function sheetError(msg) { var e = $('#sheetErr'); e.textContent = msg; e.hidden = false; }
+  sheetRoot.addEventListener('click', function (e) { if (e.target.closest('[data-close]')) closeSheet(); });
+  sheetRoot.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (sheetSubmit) sheetSubmit(e.target);
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && sheetSubmit) closeSheet(); });
+
+  function field(id, label, extra, val) {
+    return '<div class="field"><label for="' + id + '">' + label + '</label><input id="' + id + '" autocomplete="off" ' + (extra || '') + ' value="' + esc(val || '') + '"></div>';
+  }
+  function addCustomerSheet() {
+    openSheet('নতুন কাস্টমার',
+      field('f-name', 'নাম', 'maxlength="60"') + field('f-phone', 'ফোন নম্বর (না দিলেও চলবে)', 'inputmode="tel" maxlength="20"') +
+      field('f-open', 'আগের বাকি, টাকা (থাকলে)', 'inputmode="decimal"'),
+      function (f) {
+        var name = f.querySelector('#f-name').value.trim();
+        if (!name) return sheetError('কাস্টমারের নাম লিখুন।');
+        var open = f.querySelector('#f-open').value.trim(), amt = open ? parseNum(open) : 0;
+        if (open && (isNaN(amt) || amt < 0)) return sheetError('আগের বাকি সংখ্যায় লিখুন, যেমন ৫০০।');
+        var c = { id: uid(), name: name, phone: f.querySelector('#f-phone').value.trim(), sample: false, entries: [] };
+        if (amt > 0) c.entries.push({ id: uid(), t: 'debt', amt: amt, note: 'আগের বাকি', date: todayISO, ts: Date.now() });
+        store.customers.push(c); writeStore(); closeSheet();
+        state.cid = c.id; go('cust'); toast('কাস্টমার যোগ হয়েছে');
+      });
+  }
+  function entrySheet(type) {
+    var isD = type === 'debt';
+    openSheet(isD ? 'বাকি দিলাম' : 'টাকা পেলাম',
+      field('f-amt', 'টাকার পরিমাণ', 'inputmode="decimal"') + field('f-note', 'কী নিলেন বা নোট (না দিলেও চলবে)', 'maxlength="80"') +
+      '<div class="field"><label for="f-date">তারিখ</label><input id="f-date" type="date" max="' + todayISO + '" value="' + todayISO + '"></div>',
+      function (f) {
+        var amt = parseNum(f.querySelector('#f-amt').value), date = f.querySelector('#f-date').value;
+        if (isNaN(amt) || amt <= 0) return sheetError('টাকার পরিমাণ সংখ্যায় লিখুন, যেমন ৫০০।');
+        if (!parseISO(date)) return sheetError('তারিখ বেছে নিন।');
+        var c = custById(state.cid);
+        c.entries.push({ id: uid(), t: type, amt: amt, note: f.querySelector('#f-note').value.trim(), date: date, ts: Date.now() });
+        writeStore(); closeSheet(); render(); toast(isD ? 'বাকি লেখা হয়েছে' : 'জমা লেখা হয়েছে');
+      }, isD ? 'বাকি লিখুন' : 'জমা লিখুন');
+  }
+  function editCustSheet() {
+    var c = custById(state.cid);
+    openSheet('কাস্টমারের তথ্য', field('f-name', 'নাম', 'maxlength="60"', c.name) + field('f-phone', 'ফোন নম্বর', 'inputmode="tel" maxlength="20"', c.phone) +
+      '<button type="button" class="btn ghost danger" id="delCust">এই কাস্টমার মুছুন</button>',
+      function (f) {
+        var name = f.querySelector('#f-name').value.trim();
+        if (!name) return sheetError('নাম লিখুন।');
+        c.name = name; c.phone = f.querySelector('#f-phone').value.trim();
+        writeStore(); closeSheet(); render(); toast('তথ্য বদলানো হয়েছে');
+      });
+    $('#delCust').addEventListener('click', function (e) {
+      confirmTwice(e.target, 'delcust', 'এই কাস্টমার মুছুন', function () {
+        store.customers = store.customers.filter(function (x) { return x.id !== c.id; });
+        writeStore(); closeSheet(); go('home'); toast('কাস্টমার মোছা হয়েছে');
+      });
+    });
+  }
+
+  /* ---------- events ---------- */
+  app.addEventListener('input', function (e) {
+    var t = e.target;
+    if (t.id === 'q') { state.q = t.value; renderList(); }
+    else if (t.id === 'msg') { syncLinks(custById(state.cid)); }
+    else if (t.id === 'shopName') { store.shop = t.value.trim() ? t.value.slice(0, 60) : 'আমার দোকান'; writeStore(); }
+  });
+  app.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]'); if (!b) return;
+    var act = b.getAttribute('data-act');
+    if (act === 'open') go('cust', b.getAttribute('data-id'));
+    else if (act === 'back') go('home');
+    else if (act === 'settings') go('settings');
+    else if (act === 'add-cust') addCustomerSheet();
+    else if (act === 'debt') entrySheet('debt');
+    else if (act === 'pay') entrySheet('pay');
+    else if (act === 'edit-cust') editCustSheet();
+    else if (act === 'filter') { state.filter = b.getAttribute('data-f'); renderList(); }
+    else if (act === 'tone') { state.tone = b.getAttribute('data-tone'); var c = custById(state.cid); renderRemind(c, info(c.entries, todayD)); }
+    else if (act === 'copy-msg') { var ta = $('#msg'); copyText(ta.value, ta); }
+    else if (act === 'copy-backup') { var bk = $('#bk'); copyText(bk.value, bk); }
+    else if (act === 'del-entry') {
+      var id = b.getAttribute('data-id');
+      confirmTwice(b, 'de' + id, 'মুছুন', function () {
+        var c2 = custById(state.cid);
+        c2.entries = c2.entries.filter(function (x) { return x.id !== id; });
+        writeStore(); render(); toast('লেনদেন মোছা হয়েছে');
+      });
+    }
+    else if (act === 'clear-sample') {
+      confirmTwice(b, 'cs', 'নমুনা মুছে শুরু করুন', function () {
+        store.customers = store.customers.filter(function (x) { return !x.sample; });
+        store.sample = false; writeStore(); render(); toast('নমুনা মোছা হয়েছে');
+      });
+    }
+    else if (act === 'restore') {
+      var raw = $('#rs').value.trim(), err = $('#rsErr'), data = null;
+      try { data = sanitize(JSON.parse(raw)); } catch (x) { data = null; }
+      if (!data) { err.textContent = 'ব্যাকআপের লেখাটি ঠিক নেই। পুরো লেখা কপি করে পেস্ট করুন।'; err.hidden = false; return; }
+      err.hidden = true;
+      confirmTwice(b, 'rs', 'ফিরিয়ে আনুন', function () {
+        store = data; writeStore(); go('home'); toast('ব্যাকআপ থেকে ফিরে এসেছে');
+      });
+    }
+    else if (act === 'wipe') {
+      confirmTwice(b, 'wipe', 'সব তথ্য মুছুন', function () {
+        store = { shop: store.shop, sample: false, customers: [] }; writeStore(); go('home'); toast('সব তথ্য মোছা হয়েছে');
+      });
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
